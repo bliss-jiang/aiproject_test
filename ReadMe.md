@@ -3,7 +3,7 @@
 (aiservice) PS D:\AI\DocumentChat> git config --global user.email "lansrhaitun@163.com"
 (aiservice) PS D:\AI\DocumentChat> git init
 Initialized empty Git repository in D:/AI/DocumentChat/.git/
-(aiservice) PS D:\AI\DocumentChat> git remote add origin https://github.com/bliss-jiang/aiproject_test
+(aiservice) PS D:\AI\DocumentChat> git remote add origin https://github.com/bliss-jiang/aiproject_test.git
 (aiservice) PS D:\AI\DocumentChat> git commit -m "Initial commit：上传项目初始代码"
 (aiservice) PS D:\AI\DocumentChat> git branch -M main
 (aiservice) PS D:\AI\DocumentChat> git push -u origin main
