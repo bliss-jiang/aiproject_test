@@ -1,0 +1,209 @@
+:root {
+    --primary-color: #4a90e2;
+    --bg-color: #f4f7f6;
+    --chat-bg: #ffffff;
+    --user-msg-bg: #4a90e2;
+    --user-msg-text: #ffffff;
+    --ai-msg-bg: #e9ecef;
+    --ai-msg-text: #333333;
+    --border-radius: 12px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    background: var(--chat-bg);
+    border-radius: var(--border-radius);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 90vh;
+}
+
+/* 顶部上传区域 */
+.upload-section {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    background-color: #fafafa;
+}
+
+.file-drop-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 15px;
+    border: 2px dashed #cbd5e0;
+    border-radius: 8px;
+    transition: 0.2s;
+    cursor: pointer;
+    text-align: center;
+    color: #718096;
+}
+
+.file-drop-area:hover, .file-drop-area.drag-over {
+    border-color: var(--primary-color);
+    background-color: #ebf8ff;
+    color: var(--primary-color);
+}
+
+.file-msg {
+    font-size: 14px;
+    pointer-events: none;
+}
+
+.file-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* 聊天区域 */
+.chat-window {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background-color: var(--chat-bg);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.message {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    font-size: 15px;
+    line-height: 1.5;
+    position: relative;
+    word-wrap: break-word;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message.ai {
+    align-self: flex-start;
+    background-color: var(--ai-msg-bg);
+    color: var(--ai-msg-text);
+    border-bottom-left-radius: 4px;
+}
+
+.message.user {
+    align-self: flex-end;
+    background-color: var(--user-msg-bg);
+    color: var(--user-msg-text);
+    border-bottom-right-radius: 4px;
+}
+
+/* 底部输入区域 */
+.input-area {
+    padding: 20px;
+    border-top: 1px solid #eee;
+    display: flex;
+    gap: 10px;
+    background-color: #fff;
+    align-items: center; /* 修改：确保垂直居中对齐 */
+}
+
+/* 修改：新增模型选择框样式，与输入框风格统一 */
+.model-select {
+    padding: 0 15px; /* 调整内边距以匹配输入框高度 */
+    height: 44px; /* 明确设置高度 */
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    outline: none;
+    background-color: #fff;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    flex-shrink: 0; /* 防止被挤压 */
+    min-width: 120px; /* 设置最小宽度 */
+}
+
+.model-select:hover {
+    border-color: #bbb;
+}
+
+.model-select:focus {
+    border-color: var(--primary-color);
+}
+
+/* 修改：调整输入框样式，确保与下拉框对齐 */
+input[type="text"] {
+    flex: 1;
+    padding: 12px 15px;
+    height: 44px; /* 明确设置高度，与下拉框一致 */
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input[type="text"]:focus {
+    border-color: var(--primary-color);
+}
+
+button {
+    padding: 0 25px;
+    height: 44px; /* 明确设置高度 */
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s;
+    flex-shrink: 0; /* 防止按钮变形 */
+}
+
+button:hover {
+    background-color: #357abd;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* 滚动条美化 */
+.chat-window::-webkit-scrollbar {
+    width: 6px;
+}
+.chat-window::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.chat-window::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+.chat-window::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 智能助手演示</title>
+    <link rel="stylesheet" href="../html/js/MultiAI_Chat.css?version=1.1.4">
+    <script src="../html/js/jquery-4.0.0.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- 1. 文件上传区域 -->
+    <div class="upload-section">
+        <div class="file-drop-area" id="dropArea">
+            <span class="file-msg">点击或拖拽文件到此处上传</span>
+            <input class="file-input" type="file" id="fileInput">
+        </div>
+        <div id="fileName" style="margin-top: 10px; font-size: 13px; color: #666; text-align: center;"></div>
+    </div>
+
+    <!-- 2. 聊天窗口区域 -->
+    <div class="chat-window" id="chatWindow">
+        <div class="message ai">你好！我是 AI 助手，请上传文件后再与我对话，我能知道文件里的内容。</div>
+    </div>
+
+    <!-- 3. 底部输入与发送区域 -->
+    <div class="input-area">
+        <!-- 新增：搜索方案选择下拉列表 -->
+        <select class="model-select" id="Scheme">
+            <option value="langchain">LangChain方案</option>
+            <option value="LlamaIndex">LlamaIndex方案</option>
+        </select>
+
+        <input type="text" id="userInput" placeholder="输入消息...">
+        <button id="sendBtn">发送</button>
+    </div>
+</div>
+
+<script>
+    // --- 1. 文件上传逻辑 ---
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const fileNameDisplay = document.getElementById('fileName');
+    const SchemeSelect = document.getElementById('Scheme');
+    // 处理文件选择
+    fileInput.addEventListener('change', (e) => {
+        if (fileInput.files.length > 0) {
+            handleFile(fileInput.files[0]);
+        }
+    });
+
+    // 拖拽高亮效果
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            dropArea.classList.add('drag-over');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => {
+            e.preventDefault();
+            dropArea.classList.remove('drag-over');
+        }, false);
+    });
+
+    // 处理拖拽放下
+    dropArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+
+    function handleFile(file) {
+        fileNameDisplay.textContent = `已选择文件: ${file.name} (${(file.size/1024).toFixed(2)} KB)`;
+        //addMessage(`user`, `已上传文件: ${file.name}`);
+        upload_File();
+        // 模拟 AI 回复
+
+    }
+
+
+    // --- 2. 聊天与打字机效果逻辑 ---
+    const chatWindow = document.getElementById('chatWindow');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendBtn');
+    var doc_flag = 0
+    // 发送按钮点击事件
+    sendBtn.addEventListener('click', () => {
+        const text = userInput.value.trim();
+        if (text) {
+            var fileInput = document.getElementById('fileInput');
+            const scheme_value = $(SchemeSelect).val();
+            const scheme_text = $(SchemeSelect).find("option:selected").text();
+            addMessage('user', text);
+            if (fileInput.files.length === 0 && doc_flag === 0) {
+                simulateAIResponse("你还没有上传文件，我可能回答不上你想要的内容，但如果你以前上传过，我还是能记住的哦...");
+                doc_flag++;
+                // return;
+            }
+            userInput.value = '';
+            //const randomStr = sendMessage("http://127.0.0.1:8888/chatquery", text);
+            //simulateAIResponse(randomStr); 同步取值
+            const Chat_Result = asyncsendMessage("http://127.0.0.1:8888/chatquery", text,scheme_value);//异步取值
+            Chat_Result.then(
+                (data) => {
+                    simulateAIResponse(scheme_text + " 回答：");
+                    simulateAIResponse(data.query_result);
+                },
+                (error) => {
+                  console.error("出错了:", error);
+              }
+            );
+        }
+    });
+
+    // 回车发送
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendBtn.click();
+        }
+    });
+
+    // 添加消息到 DOM
+    function addMessage(sender, text) {
+        const msgDiv = document.createElement('div');
+        msgDiv.classList.add('message', sender);
+        msgDiv.textContent = text;
+        chatWindow.appendChild(msgDiv);
+        scrollToBottom();
+        return msgDiv; // 返回元素引用，方便后续操作（如打字机效果）
+    }
+
+    // 滚动到底部
+    function scrollToBottom() {
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    // 模拟 AI 打字机效果
+    function simulateAIResponse(fullText) {
+        // 1. 创建一个空的 AI 消息气泡
+        const aiMsgElement = addMessage('ai', '');
+
+        // 2. 禁用发送按钮，防止重复点击
+        sendBtn.disabled = true;
+        userInput.disabled = true;
+
+        let index = 0;
+        const speed = 50; // 打字速度
+
+        function typeWriter() {
+            if (index < fullText.length) {
+                aiMsgElement.textContent += fullText.charAt(index);
+                index++;
+                scrollToBottom();
+                setTimeout(typeWriter, speed);
+            } else {
+                // 打字结束，恢复输入状态
+                sendBtn.disabled = false;
+                userInput.disabled = false;
+                userInput.focus();
+            }
+        }
+
+        // 稍微延迟一下开始，模拟网络请求
+        setTimeout(typeWriter, 500);
+    }
+
+
+    function uploadFile(url, fileObject, onSuccess, onError, extraData = {}) {
+        // 1. 基础校验
+        if (!url || !fileObject) {
+            console.error("参数错误：缺少 URL 或文件对象");
+            if (onError) onError("参数错误");
+            return;
+        }
+
+        // 2. 构建 FormData
+        var formData = new FormData();
+
+        // 添加文件字段，'file' 是后端接口约定的字段名
+        formData.append('fileInput', fileObject);
+        console.log(formData.get("fileInput"));
+        // 添加额外的表单数据
+        for (var key in extraData) {
+            if (extraData.hasOwnProperty(key)) {
+                formData.append(key, extraData[key]);
+            }
+        }
+
+        // 3. 发送 Ajax 请求
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            async: false,
+            // 关键设置：告诉 jQuery 不要处理数据，也不要设置 Content-Type
+            processData: false,
+            contentType: false,
+
+            // 4. 监听上传进度 (可选)
+            xhr: function() {
+                var myXhr = $.ajaxSettings.xhr();
+                if (myXhr.upload) {
+                    myXhr.upload.addEventListener('progress', function(e) {
+                        if (e.lengthComputable) {
+                            var percent = (e.loaded / e.total) * 100;
+                            console.log("上传进度: " + percent.toFixed(2) + "%");
+                            // 如果需要更新 UI 进度条，可以在这里操作 DOM
+                        }
+                    }, false);
+                }
+                return myXhr;
+            },
+
+            // 5. 成功回调
+            success: function(response) {
+                console.log("上传成功，返回数据:", response);
+                if (onSuccess && typeof onSuccess === 'function') {
+                    onSuccess(response);
+                }
+            },
+
+            // 6. 错误回调
+            error: function(xhr, status, error) {
+                console.error("上传失败:", status, error);
+                var errorMsg = "网络请求失败";
+                try {
+                    // 尝试解析后端返回的详细错误信息
+                    var json = JSON.parse(xhr.responseText);
+                    if (json.detail) errorMsg = json.detail;
+                } catch (e) {}
+
+                if (onError && typeof onError === 'function') {
+                    onError(errorMsg);
+                }
+            }
+        });
+    }
+
+    function upload_File() {
+        // 获取文件对象
+        var fileInput = document.getElementById('fileInput');
+        if (fileInput.files.length === 0) {
+            alert("请先选择一个文件！");
+            return;
+        }
+        var file_name = fileInput.value;
+        if(file_name.indexOf(".pdf") < 0 && file_name.indexOf(".txt") < 0 && file_name.indexOf(".docx") < 0){
+            simulateAIResponse("我只能识别pdf、doc、docx和txt文件哦，其他文件还请再等等吧...");
+            return;
+        }
+        var file = fileInput.files[0];
+
+        // 调用封装好的函数
+        uploadFile(
+            "http://127.0.0.1:8888/upload_file/", // 假设后端地址是 /upload
+            file,
+
+            // --- 成功回调 ---
+            function(response) {
+                addMessage(`user`, `已上传文件: ${file.name}`);
+                simulateAIResponse("我已收到您的文件，正在分析中，请稍后...");
+                console.log("服务器返回:", response);
+                //js_wait();
+                simulateAIResponse("分析已完成，您有什么想知道的吗？尽情向我提问吧...");
+
+            },
+
+            // --- 失败回调 ---
+            function(errorMessage) {
+                alert("上传失败: " + errorMessage);
+            },
+        );
+    }
+
+
+    function sendMessage(url, query) {
+        var result = null;
+        var newurl = url + "?query_text=" + query
+        $.ajax({
+            url: newurl,
+            type: "GET",
+            data: null,
+            async: false,  // <--- 关键：设置为 false 开启同步模式
+            dataType: "json", // 预期返回 JSON 数据，如果是 HTML 请改为 "html"
+            success: function(response) {
+                // 请求成功，将数据赋值给 result
+                result = response;
+            },
+            error: function(xhr, status, error) {
+                alert("请求失败: " + error);
+                console.error("同步请求失败:", error);
+                // 可以在这里抛出异常，或者返回 null
+                result = null;
+            }
+        });
+        return result.query_result;
+    }
+
+
+    async function geturlData(url) {
+        try {
+            // await 会等待请求完成，并直接拿到返回值 a
+            const response_obj = await $.get(url);
+            return response_obj;
+        } catch (error) {
+            console.error("出错了", error);
+        }
+    }
+
+
+    async function asyncsendMessage(url,query,scheme) {
+        var new_url = url + "?query_text=" + query + "&scheme=" + scheme
+        // 直接用变量接收返回值，代码会停在这里直到请求完成
+        const myData = await geturlData(new_url);
+        //simulateAIResponse(myData.query_result);
+        return myData;
+    }
+</script>
+
+</body>
+</html>

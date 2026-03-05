@@ -30,6 +30,4 @@ qdrant_db/
 tmp/
 temp/
 
-# 附件或大文件 (如果不需要版本控制)
-attachments/
-html/
+ReadMe.md
