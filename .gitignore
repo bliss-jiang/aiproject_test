@@ -1,0 +1,35 @@
+# 环境变量（包含密码/Key，严禁上传！）
+.env
+
+# Python 缓存
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# 虚拟环境文件夹 (如果是 venv, .venv, env 等)
+venv/
+.venv/
+env/
+ENV/
+
+# IDE 配置
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 数据库文件 (如果是本地生成的)
+faiss_db/
+qdrant_db/
+*.db
+*.sqlite3
+
+# 临时文件或日志
+*.log
+tmp/
+temp/
+
+# 附件或大文件 (如果不需要版本控制)
+attachments/
+html/
