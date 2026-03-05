@@ -1,129 +1,202 @@
+Windows PowerShell
+Copyright (C) Microsoft Corporation. All rights reserved.
+Try the new cross-platform PowerShell https://aka.ms/pscore6
+Loading personal and system profiles took 2445ms.
+(base) PS C:\Windows\system32> D:
+(base) PS D:\> ls
 
-## 第一阶段：初始化与配置（搭建舞台）
+    Directory: D:\
 
-在函数开始执行前，我们需要准备好所有的“演员”和“道具”。
 
-### 1. 道具准备
-*   **LLM (大脑)**：`gemma3`
-    *   **职责**：负责思考、改写问题、生成最终答案。
-*   **Embedding Model (翻译官)**：`bge-m3`
-    *   **职责**：负责把文字变成向量，以便计算机理解。
-*   **Vector Store (书架)**：Qdrant
-    *   **职责**：存储“个人金融业务手册”等文档的向量及原文。
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----          2026/3/3     12:18                AI
+d-----         2026/2/26     14:38                ollama-qa-system-main
+d-----         2026/2/24     16:32                OpenCode
+d-----         2026/1/26      8:33                PyCharm
+d-r---         2025/2/10     15:43                ShareDocs
+d-----          2025/1/6     20:27                WebSite
+d-----         2026/1/27      8:12                初中
+d-----          2026/2/3     13:59                工作資料
+-a----          2026/3/2     15:42          40969 file-preview.png
+-a----         2025/6/17     17:08        5242629 Git教程.pptx
+-a----         2026/2/24     10:59         370829 Jetbrains.zip
+-a----         2024/7/12     15:27       24604624 SourceTreeSetup-3.4.18.exe
 
-### 2. 关键配置
-*   **QueryFusionRetriever**：配置为生成 3 个子查询（`num_queries=3`）。
-*   **SimilarityPostprocessor**：配置为过滤掉分数低于 0.6 的文档。
-*   **ResponseMode.REFINE**：配置为“精炼”模式，一步步生成答案。
+(base) PS D:\> cd AI
+(base) PS D:\AI> cd .\DocumentChat\
+(base) PS D:\AI\DocumentChat> ls
 
----
+    Directory: D:\AI\DocumentChat
 
-## 第二阶段：查询改写（Fusion 检索的第一步）
 
-**场景**：用户提问“个金客户经理有什么要求？”
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----          2026/3/3     17:01                .idea
+d-----          2026/3/4      8:50                .vscode
+d-----          2026/3/3     16:16                attachments
+d-----          2026/3/3     16:16                faiss_db
+d-----          2026/3/2     15:42                html
+d-----          2026/3/2     14:12                qdrant_db
+d-----          2026/3/3     12:48                test
+d-----          2026/3/3     16:46                tools
+d-----          2026/3/3      9:44                __pycache__
+-a----         2026/2/25     16:41            247 .env
+-a----          2026/3/3     10:45           2494 main.py
+-a----         2026/2/27     15:50           5387 ReadMe.md
 
-### 内部流程
-1.  **调用 LLM**：`QueryFusionRetriever` 把这个问题原封不动地发给 `gemma3`。
-2.  **Prompt 指令**：背后的 Prompt 类似于：“请把用户的问题改写成 3 个不同的角度，以便在数据库中找到更全面的信息。”
-3.  **LLM 生成子查询**：`gemma3` 返回了 3 个新问题：
-    *   **子查询 1**：“个金客户经理的**任职资格**是什么？”
-    *   **子查询 2**：“个金客户经理的**考核指标**有哪些？”
-    *   **子查询 3**：“成为个金客户经理需要**哪些技能**？”
+(base) PS D:\AI\DocumentChat>
+(base) PS D:\AI\DocumentChat> conda activate aiservice
+(aiservice) PS D:\AI\DocumentChat> git config --global user.name "lansrhaitun@163.com"
+(aiservice) PS D:\AI\DocumentChat> git config --global user.name "bliss-jiang"
+(aiservice) PS D:\AI\DocumentChat> git config --global user.email "lansrhaitun@163.com"
+(aiservice) PS D:\AI\DocumentChat> git init
+Initialized empty Git repository in D:/AI/DocumentChat/.git/
+(aiservice) PS D:\AI\DocumentChat> git remote add origin https://github.com/bliss-jiang/aiproject_test
+(aiservice) PS D:\AI\DocumentChat> git add
+Nothing specified, nothing added.
+hint: Maybe you wanted to say 'git add .'?
+hint: Disable this message with "git config set advice.addEmptyPathspec false"
+(aiservice) PS D:\AI\DocumentChat> git commit -m "Initial commit：上传项目初始代码"
+On branch master
 
-### 原理
-这就是“多路查询”。如果只搜原问题，可能只找到“任职资格”，漏掉了“技能”和“考核”。通过改写，我们覆盖了更多语义。
+Initial commit
 
----
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        .env
+        .idea/
+        .vscode/
+        ReadMe.md
+        __pycache__/
+        attachments/
+        faiss_db/
+        html/
+        main.py
+        qdrant_db/
+        test/
+        tools/
 
-## 第三阶段：向量化与检索（Fusion 检索的第二步）
+nothing added to commit but untracked files present (use "git add" to track)
+(aiservice) PS D:\AI\DocumentChat> git branch -M main
+(aiservice) PS D:\AI\DocumentChat> git push -u origin main
+error: src refspec main does not match any
+error: failed to push some refs to 'https://github.com/bliss-jiang/aiproject_test'
+(aiservice) PS D:\AI\DocumentChat>
+(aiservice) PS D:\AI\DocumentChat>
+(aiservice) PS D:\AI\DocumentChat>
+(aiservice) PS D:\AI\DocumentChat> git add
+Nothing specified, nothing added.
+hint: Maybe you wanted to say 'git add .'?
+hint: Disable this message with "git config set advice.addEmptyPathspec false"
+(aiservice) PS D:\AI\DocumentChat> git add .
+(aiservice) PS D:\AI\DocumentChat> git status
+On branch main
 
-**动作**：拿着 3 个子查询去 Qdrant 数据库里找文档。
+No commits yet
 
-### 内部流程
-1.  **向量化**：
-    *   调用 3 次 `/api/embed`。
-    *   将“任职资格”、“考核指标”、“哪些技能”分别变成向量 `V1`, `V2`, `V3`。
-2.  **检索**：
-    *   Qdrant 拿着 `V1` 去库里搜，找到 5 个最相关的文档片段。
-    *   拿着 `V2` 去库里搜，又找到 5 个。
-    *   拿着 `V3` 去库里搜，又找到 5 个。
-3.  **合并**：
-    *   总共拿到了 15 个文档片段。
-    *   **去重**：系统发现其中 3 个片段是重复的（比如 3 个问题都搜到了同一段“基本要求”），去掉后剩下 **12 个**。
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+        new file:   .gitignore
+        new file:   ReadMe.md
+        new file:   main.py
+        new file:   test/OpenAIembedding.py
+        new file:   "test/llamaindex\350\277\236\346\216\245\345\261\200\345\237\237\347\275\221\345\244\247\346\250\241\345\236\213.py"
+        new file:   "test/\346\265\213\350\257\225ollama\350\277\236\346\216\245qdrant.py"
+        new file:   tools/faiss_index/index.faiss
+        new file:   tools/faiss_index/index.pkl
+        new file:   tools/file_tools.py
+        new file:   tools/new_tools_test.py
+        new file:   tools/rag_langchain_tools.py
+        new file:   tools/rag_llamaindex_tools.py
 
-### 原理
-这就是“召回”。我们通过不同的角度，尽可能多地找回了潜在相关的文档。
+(aiservice) PS D:\AI\DocumentChat> git commit -m "Initial commit: 上传项目初始代码"
+[main (root-commit) c52f91d] Initial commit: 上传项目初始代码
+ 12 files changed, 987 insertions(+)
+ create mode 100644 .gitignore
+ create mode 100644 ReadMe.md
+ create mode 100644 main.py
+ create mode 100644 test/OpenAIembedding.py
+ create mode 100644 "test/llamaindex\350\277\236\346\216\245\345\261\200\345\237\237\347\275\221\345\244\247\346\250\241\345\236\213.py"
+ create mode 100644 "test/\346\265\213\350\257\225ollama\350\277\236\346\216\245qdrant.py"
+ create mode 100644 tools/faiss_index/index.faiss
+ create mode 100644 tools/faiss_index/index.pkl
+ create mode 100644 tools/file_tools.py
+ create mode 100644 tools/new_tools_test.py
+ create mode 100644 tools/rag_langchain_tools.py
+ create mode 100644 tools/rag_llamaindex_tools.py
+(aiservice) PS D:\AI\DocumentChat> git push -u origin main
+info: please complete authentication in your browser...
+Enumerating objects: 17, done.
+Counting objects: 100% (17/17), done.
+Delta compression using up to 16 threads
+Compressing objects: 100% (17/17), done.
+Writing objects: 100% (17/17), 22.43 KiB | 11.21 MiB/s, done.
+Total 17 (delta 0), reused 0 (delta 0), pack-reused 0 (from 0)
+To https://github.com/bliss-jiang/aiproject_test
+ * [new branch]      main -> main
+branch 'main' set up to track 'origin/main'.
+(aiservice) PS D:\AI\DocumentChat> git push
+Everything up-to-date
+(aiservice) PS D:\AI\DocumentChat> git rm -r --cached
+fatal: No pathspec was given. Which files should I remove?
+(aiservice) PS D:\AI\DocumentChat> git add .
+warning: in the working copy of 'html/js/jquery-4.0.0.js', LF will be replaced by CRLF the next time Git touches it
+(aiservice) PS D:\AI\DocumentChat> git status
+On branch main
+Your branch is up to date with 'origin/main'.
 
----
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   .gitignore
+        new file:   "attachments/\351\225\277\345\205\2642025-2026\345\271\264\345\221\230\345\267\245\345\225\206\344\277\235\347\246\217\345\210\251\346\211\213\345\206\214.pdf"
+        new file:   html/MultiAI_Chat.html
+        new file:   html/img/file-preview.png
+        new file:   html/js/MultiAI_Chat.css
+        new file:   html/js/jquery-4.0.0.js
 
-## 第四阶段：后处理（去伪存真）
+(aiservice) PS D:\AI\DocumentChat> git commit -m "Fix 更新.gitingore"
+[main b1bb3cc] Fix 更新.gitingore
+ 6 files changed, 10219 insertions(+), 3 deletions(-)
+ create mode 100644 "attachments/\351\225\277\345\205\2642025-2026\345\271\264\345\221\230\345\267\245\345\225\206\344\277\235\347\246\217\345\210\251\346\211\213\345\206\214.pdf"
+ create mode 100644 html/MultiAI_Chat.html
+ create mode 100644 html/img/file-preview.png
+ create mode 100644 html/js/MultiAI_Chat.css
+ create mode 100644 html/js/jquery-4.0.0.js
+(aiservice) PS D:\AI\DocumentChat> git push -u origin main
+fatal: unable to access 'https://github.com/bliss-jiang/aiproject_test/': Empty reply from server
+(aiservice) PS D:\AI\DocumentChat> git push -u origin main
+fatal: unable to access 'https://github.com/bliss-jiang/aiproject_test/': Failed to connect to github.com port 443 after 21068 ms: Could not connect to server
+(aiservice) PS D:\AI\DocumentChat> git add .
+(aiservice) PS D:\AI\DocumentChat> git status
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
 
-**动作**：从 12 个文档中选出最好的。
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        deleted:    "attachments/\351\225\277\345\205\2642025-2026\345\271\264\345\221\230\345\267\245\345\225\206\344\277\235\347\246\217\345\210\251\346\211\213\345\206\214.pdf"
 
-### 内部流程
-1.  **计算分数**：
-    *   Qdrant 在检索时已经给每个文档打了一个“相似度分数”（0.0 到 1.0）。
-    *   例如：
-        *   文档 A（关于任职资格）：0.85 分
-        *   文档 B（关于技能）：0.78 分
-        *   文档 C（关于理财销售）：0.55 分
-2.  **过滤**：
-    *   `SimilarityPostprocessor` 上场了。
-    *   它检查分数，发现文档 C 只有 0.55，低于阈值 0.6。
-    *   **动作**：把文档 C 扔掉。
-3.  **结果**：
-    *   最终只剩下 **8 个**高分文档。
+(aiservice) PS D:\AI\DocumentChat> git commit -m "Fix更新.gitingore"
+[main f336d14] Fix更新.gitingore
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ delete mode 100644 "attachments/\351\225\277\345\205\2642025-2026\345\271\264\345\221\230\345\267\245\345\225\206\344\277\235\347\246\217\345\210\251\346\211\213\345\206\214.pdf"
+(aiservice) PS D:\AI\DocumentChat> git push -u origin main
+fatal: unable to access 'https://github.com/bliss-jiang/aiproject_test/': Failed to connect to github.com port 443 after 21078 ms: Could not connect to server
+(aiservice) PS D:\AI\DocumentChat> git push -u origin main
+Enumerating objects: 16, done.
+Counting objects: 100% (16/16), done.
+Delta compression using up to 16 threads
+Compressing objects: 100% (13/13), done.
+Writing objects: 100% (14/14), 942.99 KiB | 28.58 MiB/s, done.
+Total 14 (delta 2), reused 0 (delta 0), pack-reused 0 (from 0)
+remote: Resolving deltas: 100% (2/2), completed with 1 local object.
+To https://github.com/bliss-jiang/aiproject_test
+   c52f91d..f336d14  main -> main
+branch 'main' set up to track 'origin/main'.
+(aiservice) PS D:\AI\DocumentChat> (aiservice) PS D:\AI\DocumentChat> git push -u origin main
 
-### 原理
-这就是“精排”。虽然我们召回了很多，但其中可能夹杂着噪音（比如“理财销售”虽然有点关系，但不是“要求”）。通过分数过滤，我们保证了发给大模型的都是高质量信息。
 
----
-
-## 第五阶段：答案生成（LLM 登场）
-
-**动作**：把剩下的 8 个文档发给 `gemma3`，让它写回答。
-
-### 内部流程
-1.  **Prompt 构建**：
-    *   系统将 8 个文档拼接成一个长上下文。
-    *   Prompt 大致是：“基于以下上下文信息，回答用户问题。上下文：[文档1...文档8]。问题：个金客户经理有什么要求？”
-2.  **REFINE 模式（精炼生成）**：
-    *   **第 1 轮**：把问题 + 文档 1 发给 LLM。LLM：“根据文档 1，要求是本科以上学历。”
-    *   **第 2 轮**：把“本科以上学历” + 文档 2 发给 LLM。LLM：“结合文档 2，还需要有 2 年工作经验。”
-    *   ...
-    *   **第 8 轮**：把之前的总结 + 文档 8 发给 LLM。LLM：“最后，还需要通过基金从业资格考试。综上，要求是...”
-3.  **最终输出**：
-    *   LLM 输出一段流畅、全面的文字，整合了所有 8 个文档的信息。
-
-### 原理
-这就是“生成”。LLM 不是在凭空捏造，而是在“阅读”你提供的资料后，用自己的话总结出答案。
-
----
-
-## 总结：数据流转全景图
-
-```text
-[用户问题]
-      |
-      V
-[1. 查询改写] (LLM: gemma3)
-      |----> 生成 3 个子查询
-      |
-      V
-[2. 向量化] (Embedding: bge-m3)
-      |----> 3 个子查询 -> 3 个向量
-      |
-      V
-[3. 检索] (Vector DB: Qdrant)
-      |----> 3 个向量 -> 召回 15 个文档 (去重后 12 个)
-      |
-      V
-[4. 后处理] (SimilarityPostprocessor)
-      |----> 过滤低分文档 -> 剩下 8 个高质量文档
-      |
-      V
-[5. 答案生成] (LLM: gemma3 + REFINE 模式)
-      |----> 逐步阅读 8 个文档 -> 生成最终答案
-      |
-      V
-[最终回答]
+git add .
+git commit -m "你的修改说明"
+git push
