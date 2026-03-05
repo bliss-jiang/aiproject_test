@@ -11,14 +11,12 @@ Initialized empty Git repository in D:/AI/DocumentChat/.git/
 (aiservice) PS D:\AI\DocumentChat> git status
 (aiservice) PS D:\AI\DocumentChat> git commit -m "Initial commit: 上传项目初始代码"
 (aiservice) PS D:\AI\DocumentChat> git push -u origin main
-
 (aiservice) PS D:\AI\DocumentChat> git rm -r --cached
 (aiservice) PS D:\AI\DocumentChat> git add .
 warning: in the working copy of 'html/js/jquery-4.0.0.js', LF will be replaced by CRLF the next time Git touches it
 (aiservice) PS D:\AI\DocumentChat> git status
 (aiservice) PS D:\AI\DocumentChat> git commit -m "Fix 更新.gitingore"
 (aiservice) PS D:\AI\DocumentChat> git push -u origin main
-
 (aiservice) PS D:\AI\DocumentChat> git add .
 (aiservice) PS D:\AI\DocumentChat> git status
 On branch main
