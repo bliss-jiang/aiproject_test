@@ -183,8 +183,9 @@ def query_document_ai_llamaindex_embed(question:str)->str:
     fusion_retriever = QueryFusionRetriever(
         [index.as_retriever()],
         similarity_top_k=3,  # 检索召回 top k 结果
-        num_queries=3,  # 生成 query 数
+        num_queries=4,  # 生成 query 数
         use_async=False,
+        verbose=True #开启日志
         # query_gen_prompt=query_gen_prompt_str,  # 可以自定义 query 生成的 prompt 模板
     )
 
