@@ -22,6 +22,7 @@ from tools.rag_llamaindex_tools import (
 app = FastAPI()
 app.mount("/html", StaticFiles(directory="html"), name="html")
 
+
 @app.post("/upload_file/")
 async def upload_file(fileInput: UploadFile = File(...)):
     file_extension = Path(fileInput.filename).suffix.lower()
@@ -60,8 +61,6 @@ async def chat_query(query_text:str,scheme:str):
 @app.get("/aichats/")
 async def new_chat():
     return HTMLResponse(content=open("html/MultiAI_Chat.html", "r",encoding="utf-8").read(), status_code=200)
-
-
 
 if __name__ == '__main__':
     uvicorn.run(app, host="127.0.0.1", port=8888)

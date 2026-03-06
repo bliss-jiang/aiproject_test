@@ -1,4 +1,3 @@
-(base) PS D:\AI\DocumentChat> conda activate aiservice
 (aiservice) PS D:\AI\DocumentChat> git config --global user.name "bliss-jiang"
 (aiservice) PS D:\AI\DocumentChat> git config --global user.email "lansrhaitun@163.com"
 (aiservice) PS D:\AI\DocumentChat> git init
@@ -20,7 +19,6 @@
 (aiservice) PS D:\AI\DocumentChat> git commit -m "Fix更新.gitingore"
 (aiservice) PS D:\AI\DocumentChat> git push -u origin main
 (aiservice) PS D:\AI\DocumentChat> (aiservice) PS D:\AI\DocumentChat> git push -u origin main
-
 
 git add .
 git commit -m "你的修改说明"
