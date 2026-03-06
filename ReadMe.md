@@ -1,5 +1,5 @@
-(aiservice) PS D:\AI\DocumentChat> git config --global user.name "bliss-jiang"
-(aiservice) PS D:\AI\DocumentChat> git config --global user.email "lansrhaitun@163.com"
+(aiservice) PS D:\AI\DocumentChat> git config --global user.name ""
+(aiservice) PS D:\AI\DocumentChat> git config --global user.email ""
 (aiservice) PS D:\AI\DocumentChat> git init
 (aiservice) PS D:\AI\DocumentChat> git remote add origin https://github.com/bliss-jiang/aiproject_test.git
 (aiservice) PS D:\AI\DocumentChat> git commit -m "Initial commit：上传项目初始代码"
